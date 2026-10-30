@@ -211,6 +211,10 @@ do
 
   vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
+  -- Make Ctrl+Z undo instead of suspending Neovim
+  vim.keymap.set({ 'n', 'x' }, '<C-z>', '<cmd>undo<CR>', { desc = 'Undo' })
+  vim.keymap.set('i', '<C-z>', '<C-o>u', { desc = 'Undo' })
+
   -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
   -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
   -- is not what someone will guess without a bit more experience.
@@ -434,7 +438,11 @@ do
   -- Load the colorscheme here.
   -- Like many other themes, this one has different styles, and you could load
   -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-  vim.cmd.colorscheme 'tokyonight-night'
+  -- vim.cmd.colorscheme 'tokyonight-night'
+
+  -- Official Dracula theme, matching the VS Code one
+  vim.pack.add { { src = gh 'dracula/vim', name = 'dracula' } }
+  vim.cmd.colorscheme 'dracula'
 
   -- Highlight todo, notes, etc in comments
   vim.pack.add { gh 'folke/todo-comments.nvim' }
