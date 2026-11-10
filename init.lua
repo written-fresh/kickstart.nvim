@@ -736,7 +736,7 @@ do
     -- clangd = {},
     -- gopls = {},
     -- pyright = {},
-    -- tsc = {},
+    ts_ls = {}, -- TypeScript and JavaScript, including TSX and JSX
     --
     -- Some languages (like rust) have entire language plugins that can be useful:
     --    https://github.com/mrcjkb/rustaceanvim
@@ -804,6 +804,7 @@ do
   local ensure_installed = vim.tbl_keys(servers or {})
   vim.list_extend(ensure_installed, {
     -- You can add other tools here that you want Mason to install
+    'prettier',
   })
 
   require('mason-tool-installer').setup { ensure_installed = ensure_installed }
@@ -821,32 +822,22 @@ end
 do
   -- [[ Formatting ]]
   vim.pack.add { gh 'stevearc/conform.nvim' }
+  local web_formatters = {
+    javascript = { 'prettier' },
+    javascriptreact = { 'prettier' },
+    typescript = { 'prettier' },
+    typescriptreact = { 'prettier' },
+  }
+
   require('conform').setup {
     notify_on_error = false,
     format_on_save = function(bufnr)
-      -- You can specify filetypes to autoformat on save here:
-      local enabled_filetypes = {
-        -- lua = true,
-        -- python = true,
-      }
-      if enabled_filetypes[vim.bo[bufnr].filetype] then
-        return { timeout_ms = 500 }
-      else
-        return nil
-      end
+      if web_formatters[vim.bo[bufnr].filetype] then return { timeout_ms = 2000, lsp_format = 'never' } end
     end,
     default_format_opts = {
-      lsp_format = 'fallback', -- Use external formatters if configured below, otherwise use LSP formatting. Set to `false` to disable LSP formatting entirely.
+      lsp_format = 'fallback', -- Use external formatters if configured below, otherwise use LSP formatting. Set to 'never' to disable LSP formatting entirely.
     },
-    -- You can also specify external formatters in here.
-    formatters_by_ft = {
-      -- rust = { 'rustfmt' },
-      -- Conform can also run multiple formatters sequentially
-      -- python = { "isort", "black" },
-      --
-      -- You can use 'stop_after_first' to run the first available formatter from the list
-      -- javascript = { "prettierd", "prettier", stop_after_first = true },
-    },
+    formatters_by_ft = web_formatters,
   }
 
   vim.keymap.set({ 'n', 'v' }, '<leader>f', function() require('conform').format { async = true } end, { desc = '[F]ormat buffer' })
@@ -1018,7 +1009,7 @@ do
   -- require 'kickstart.plugins.indent_line'
   -- require 'kickstart.plugins.lint'
   -- require 'kickstart.plugins.autopairs'
-  -- require 'kickstart.plugins.neo-tree'
+  require 'kickstart.plugins.neo-tree'
 
   -- NOTE: You can add your own plugins, configuration, etc. in `lua/custom/plugins/*.lua`.
   --
