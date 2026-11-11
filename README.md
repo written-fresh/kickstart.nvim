@@ -125,17 +125,6 @@ That's it! `vim.pack` will install all the plugins from your config. Use
 `:lua vim.pack.update()` to fetch updates (`:write` applies updates, `:quit`
 cancels them).
 
-#### File Explorer and Web Development
-
-Press `\` to open Neo-tree and reveal the current file. Press `\` inside the
-tree to close it.
-
-With Node.js and npm on your PATH, Mason installs the TypeScript language server
-and Prettier on first launch. The language server supports JavaScript and
-TypeScript, including JSX and TSX. Prettier formats these files on save and uses
-the project's Prettier configuration when available. Run `:Mason` to check
-installation progress.
-
 #### Read The Friendly Documentation
 
 Read through the `init.lua` file in your configuration folder for more

@@ -736,6 +736,7 @@ do
     -- clangd = {},
     -- gopls = {},
     -- pyright = {},
+    -- tsc = {},
     ts_ls = {}, -- TypeScript and JavaScript, including TSX and JSX
     --
     -- Some languages (like rust) have entire language plugins that can be useful:
@@ -822,22 +823,40 @@ end
 do
   -- [[ Formatting ]]
   vim.pack.add { gh 'stevearc/conform.nvim' }
-  local web_formatters = {
-    javascript = { 'prettier' },
-    javascriptreact = { 'prettier' },
-    typescript = { 'prettier' },
-    typescriptreact = { 'prettier' },
-  }
-
   require('conform').setup {
     notify_on_error = false,
     format_on_save = function(bufnr)
-      if web_formatters[vim.bo[bufnr].filetype] then return { timeout_ms = 2000, lsp_format = 'never' } end
+      -- You can specify filetypes to autoformat on save here:
+      local enabled_filetypes = {
+        -- lua = true,
+        -- python = true,
+        javascript = true,
+        javascriptreact = true,
+        typescript = true,
+        typescriptreact = true,
+      }
+      if enabled_filetypes[vim.bo[bufnr].filetype] then
+        return { timeout_ms = 2000, lsp_format = 'never' }
+      else
+        return nil
+      end
     end,
     default_format_opts = {
-      lsp_format = 'fallback', -- Use external formatters if configured below, otherwise use LSP formatting. Set to 'never' to disable LSP formatting entirely.
+      lsp_format = 'fallback', -- Use external formatters if configured below, otherwise use LSP formatting. Set to `false` to disable LSP formatting entirely.
     },
-    formatters_by_ft = web_formatters,
+    -- You can also specify external formatters in here.
+    formatters_by_ft = {
+      javascript = { 'prettier' },
+      javascriptreact = { 'prettier' },
+      typescript = { 'prettier' },
+      typescriptreact = { 'prettier' },
+      -- rust = { 'rustfmt' },
+      -- Conform can also run multiple formatters sequentially
+      -- python = { "isort", "black" },
+      --
+      -- You can use 'stop_after_first' to run the first available formatter from the list
+      -- javascript = { "prettierd", "prettier", stop_after_first = true },
+    },
   }
 
   vim.keymap.set({ 'n', 'v' }, '<leader>f', function() require('conform').format { async = true } end, { desc = '[F]ormat buffer' })
